@@ -1,0 +1,49 @@
+.background {
+  background-color: #7d7f85;
+}
+.flex-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.flex-container img {
+  width: 200px;
+  margin-bottom: 30px;
+}
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.title-email {
+  font-weight: 700
+}
+:host::ng-deep p-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 0 10px 0 10px;
+}
+:host::ng-deep .p-card .p-card-body {
+  padding: 15px;
+}
+:host::ng-deep .p-card .p-card-body .p-card-title {
+  text-align: center;
+  font-size: 21px;
+  font-weight: 300;
+  margin: 5px 0 15px 0;
+}
+:host::ng-deep .p-card .p-card-body .p-card-content .p-inputgroup .custom-password, :host::ng-deep .p-card .p-card-body .p-card-content .p-inputgroup .p-dropdown {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+:host::ng-deep .p-card .p-card-body .p-card-content p-password {
+  flex: 1 1 auto;
+}
+:host::ng-deep .p-card .p-card-body .p-card-content .p-fluid .p-inputtext, :host::ng-deep .p-card .p-card-body .p-card-content .p-dropdown {
+  width: 100%;
+}
+:host::ng-deep .p-card .p-card-body .p-card-content .p-dropdown {
+  height: 40px;
+}

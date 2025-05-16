@@ -1,0 +1,13 @@
+<app-menu></app-menu>
+
+@if (localStorageService.getIsLoginFromSalesforce()) {
+  <p-divider/>
+
+  @if (authService.user() && authService.user().user) {
+    <p class="p-1" style="text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; display: block;">
+      {{ authService.user().user.fullName }}<br>
+      {{ authService.user().user.role }}
+    </p>
+  }
+
+}

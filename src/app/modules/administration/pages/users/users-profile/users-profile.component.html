@@ -1,0 +1,14 @@
+<div class="card">
+  <div class="text-right">
+    <p-button icon="pi pi-times" (click)="profile()" routerLink="" [rounded]="true" [text]="true" severity="secondary"/>
+  </div>
+  @if(this.user()){
+    <div class="list-group">
+      <h5>{{ user().fullName }}</h5>
+      <p-divider/>
+      <p>{{ user().email }}<br>
+      {{user().role}}
+      </p>
+    </div>
+  }
+</div>

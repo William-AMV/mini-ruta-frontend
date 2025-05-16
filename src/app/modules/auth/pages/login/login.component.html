@@ -1,0 +1,42 @@
+<div class="background">
+  <div class="flex-container">
+    <p-card header="MiniRuta System">
+      <div class="center-content">
+        <img src="assets/images/logo.png" alt="MiniRuta">
+      </div>
+      <div class="p-fluid">
+        <form [formGroup]="form" (ngSubmit)="isValidEmail() ? signIn() : verifyEmail()">
+          @if (!isValidEmail()) {
+            <div class="field">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                <input type="email" pInputText id="username" formControlName="email" placeholder="Email"/>
+              </div>
+              <err [control]="form.controls.email" attribute="email"></err>
+            </div>
+          } @else {
+            <div class="center-content">
+              <h6 class="title-email">{{ form.value.email }}</h6>
+            </div>
+            <div class="field mb-2">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
+                <span class="p-input-icon-right">
+                  <i [ngClass]="['button', 'pi', isMaskPassword() ? 'pi-eye-slash': 'pi-eye']"
+                     (click)="maskPasswordToggle()"></i>
+                  <input pPassword id="password" [type]="isMaskPassword() ? 'password': 'text'"
+                         formControlName="password"
+                         [feedback]="false" placeholder="Password" class="custom-password"/>
+                </span>
+              </div>
+              <err [control]="form.controls.password" attribute="contraseña"></err>
+            </div>
+          }
+
+          <p-button [label]="isValidEmail() ? 'Sign In': 'Continue'" type="submit"
+                    [loading]="isLoading()" styleClass="mt-3"></p-button>
+        </form>
+      </div>
+    </p-card>
+  </div>
+</div>

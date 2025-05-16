@@ -1,0 +1,55 @@
+<div class="card">
+  @if (isLoading()) {
+    <p-progressBar mode="indeterminate" [style]="{ height: '6px' }"/>
+  }
+  <div class="grid flex">
+    <div class="col-6">
+      <h4>Stop List</h4>
+    </div>
+    <div class="col-6 text-right">
+      <p-button label="Add New" icon="pi pi-plus" (click)="handleActionEmitter(action.Store)"/>
+    </div>
+  </div>
+
+  <p-table [value]="searchStop()" styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" placeholder="Search keyword" [(ngModel)]="searchTerm" (keyup.enter)="this.searchStop()" />
+        </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>No.</th>
+        <th>Name</th>
+        <th>Status</th>
+        <th [ngStyle]="{ width: '150px' }"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-i="rowIndex">
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.name }}</td>
+        <td>
+          <p-tag [rounded]="false" [value]="item.isActive ? 'Active' : 'Inactive' "
+                 [severity]=" item.isActive ? 'success':'danger'"></p-tag>
+        </td>
+        <td>
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-sm p-button-success mr-2" pTooltip="Edit"
+                  (click)="showFormDialog(action.Update, item)"></button>
+          <button pButton pRipple icon="{{item.isActive? 'pi pi-trash' : 'pi pi-refresh' }}" class="p-button-sm {{item.isActive?'p-button-danger' : 'p-button-info'}}"
+                  pTooltip="{{item.isActive? 'Delete' : 'Restore'}} " (click)="delete(item.id, item.isActive)"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="12">
+          No items show
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

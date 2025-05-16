@@ -1,0 +1,22 @@
+<div class="p-fluid">
+  <form [formGroup]="form" (ngSubmit)="saveUser()" autocomplete="off" novalidate>
+    <div class="grid">
+      <div class="field col-12 md:col-12">
+        <label for="name">Name:* </label>
+        <input type="text" pInputText id="name" formControlName="name">
+        <err [control]="form.controls.name" attribute="name"></err>
+      </div>
+       <div class="field col-12 md:col-12">
+        <label for="linkPlace">Link Place:* </label>
+        <input type="text" pInputText id="linkPlace" formControlName="linkPlace">
+        <err [control]="form.controls.linkPlace" attribute="Link Place"></err>
+      </div>
+      <div class="col-12 flex justify-content-end pb-0">
+        <div>
+          <button pButton pRipple label="Accept" icon="pi pi-check" class="p-button-text w-auto" type="submit" [disabled]="!form.valid"></button>
+          <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text w-auto" type="button" (click)="close()"></button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -15,9 +15,9 @@ import { FileUploadModule } from 'primeng/fileupload';
 import {ErrorResponse} from "../../../../../core/interfaces/error-response";
 import {ToastService} from '../../../../../core/service/toast.service';
 import {RoleTypeList} from '../../../../../core/enums/role-enum';
-import { StopService } from '../../../service/stop.service';
-import { StopDialogFormGroup } from '../../../interfaces/stop-dialog-form-groups';
-import { Stop } from '../../../models/stop';
+import { PlaceService } from '../../../service/place.service';
+import { PlaceDialogFormGroup } from '../../../interfaces/place-dialog-form-groups';
+import { Place } from '../../../models/place';
 
 @Component({
   selector: 'app-stops-form',
@@ -34,24 +34,24 @@ import { Stop } from '../../../models/stop';
     Ripple,
     FileUploadModule,
   ],
-  templateUrl: './stops-form.component.html',
-  styleUrl: './stops-form.component.css'
+  templateUrl: './places-form.component.html',
+  styleUrl: './places-form.component.css'
 })
-export class StopsFormComponent implements OnInit, OnDestroy {
+export class PlacesFormComponent implements OnInit, OnDestroy {
   private fb = inject(NonNullableFormBuilder);
   private ref = inject(DynamicDialogRef);
   private dialogConfig = inject(DynamicDialogConfig);
   private toastService = inject(ToastService);
-  private stopService = inject(StopService);
+  private placeService = inject(PlaceService);
 
   @Output() closeDialogEventAccept = new EventEmitter<boolean>();
 
-  form: FormGroup<StopDialogFormGroup> = this.initForm();
-  stop!: Stop;
+  form: FormGroup<PlaceDialogFormGroup> = this.initForm();
+  place!: Place;
   readonly roleList = RoleTypeList;
   action!: Action;
   isLoading: WritableSignal<boolean> = signal(false);
-  saveStopLabel: WritableSignal<string> = signal('Guardar');
+  savePlaceLabel: WritableSignal<string> = signal('Guardar');
   subs: Subscription=new Subscription();
 
   ngOnInit(): void {
@@ -62,8 +62,8 @@ export class StopsFormComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  initForm(): FormGroup<StopDialogFormGroup> {
-    return this.fb.group<StopDialogFormGroup>({
+  initForm(): FormGroup<PlaceDialogFormGroup> {
+    return this.fb.group<PlaceDialogFormGroup>({
       name: this.fb.control('',[Validators.required]),
       linkPlace: this.fb.control(null,[]),
       isActive: this.fb.control(true)
@@ -71,11 +71,11 @@ export class StopsFormComponent implements OnInit, OnDestroy {
   }
 
   handlePayload() {
-    const { action, stop } = this.dialogConfig.data;
+    const { action, place } = this.dialogConfig.data;
     this.action = action;
-    if (stop) {
-      this.stop = stop;
-      this.form.reset(stop);
+    if (place) {
+      this.place = place;
+      this.form.reset(place);
     }
   }
 
@@ -87,11 +87,11 @@ export class StopsFormComponent implements OnInit, OnDestroy {
       });
     }
     this.isLoading.set(true);
-    this.saveStopLabel.set('Guardando');
-    this.subs.add(concat(this.action === Action.Store ? this.createStop$() : this.updateStop$()).pipe(
-        finalize(() => { this.isLoading.set(false); this.saveStopLabel.set('Guardar'); })
+    this.savePlaceLabel.set('Guardando');
+    this.subs.add(concat(this.action === Action.Store ? this.createPlace$() : this.updatePlace$()).pipe(
+        finalize(() => { this.isLoading.set(false); this.savePlaceLabel.set('Guardar'); })
       ).subscribe({
-        next: (stop) => this.ref.close({ stop, action: this.action }),
+        next: (place) => this.ref.close({ place, action: this.action }),
         error: (err) => {
           const error = err.error.errors.map((err: ErrorResponse) => err.message)
           this.toastService.present({ severity: 'error', detail: error })
@@ -100,17 +100,17 @@ export class StopsFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  createStop$(): Observable<Stop> {
-    const stop = new Stop({ ...this.form.value});
-    return this.stopService.create(stop).pipe(
+  createPlace$(): Observable<Place> {
+    const place = new Place({ ...this.form.value});
+    return this.placeService.create(place).pipe(
       tap(() => this.toastService.present({ severity: 'success', detail: 'Register successful!.' }),
       )
     );
   }
 
-  updateStop$(): Observable<Stop> {
-    const stop = new Stop({ ...this.form.value, id: this.stop.id });
-    return this.stopService.update(this.stop.id, stop).pipe(
+  updatePlace$(): Observable<Place> {
+    const place = new Place({ ...this.form.value, id: this.place.id });
+    return this.placeService.update(this.place.id, place).pipe(
       tap(() => this.toastService.present({ severity: 'success', detail: `Update successful!.` }),
       )
     );

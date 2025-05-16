@@ -1,6 +1,6 @@
 import { FormControl } from "@angular/forms";
 
-export interface StopDialogFormGroup {
+export interface PlaceDialogFormGroup {
     name: FormControl<string>
     linkPlace: FormControl<string|null>
     isActive: FormControl<boolean>

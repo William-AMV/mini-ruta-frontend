@@ -6,15 +6,15 @@ import {TagModule} from "primeng/tag";
 import {BehaviorSubject, catchError, EMPTY, finalize, Observable, Subscription, switchMap, take, tap} from "rxjs";
 import {Action} from "../../../../../core/enums/action";
 import {DynamicDialogRef} from "primeng/dynamicdialog";
-import {StopsFormComponent} from "../stops-form/stops-form.component";
+import {PlacesFormComponent} from "../places-form/places-form.component";
 import {ToastService} from '../../../../../core/service/toast.service';
 import {DialogService} from '../../../../../core/service/dialog.service';
 import {ConfirmationDialogService} from '../../../../../core/service/confirmation-dialog.service';
-import { StopService } from '../../../service/stop.service';
-import { Stop } from '../../../models/stop';
+import { PlaceService } from '../../../service/place.service';
+import { Place } from '../../../models/place';
 
 @Component({
-  selector: 'app-stops-index',
+  selector: 'app-places-index',
   standalone: true,
   imports: [
     PrimeNgModule,
@@ -24,16 +24,16 @@ import { Stop } from '../../../models/stop';
     ReactiveFormsModule,
     TagModule,
   ],
-  templateUrl: './stops-index.component.html',
-  styleUrl: './stops-index.component.css'
+  templateUrl: './places-index.component.html',
+  styleUrl: './places-index.component.css'
 })
-export class StopsIndexComponent implements OnInit, OnDestroy {
-  private stopService = inject(StopService);
+export class PlacesIndexComponent implements OnInit, OnDestroy {
+  private placeService = inject(PlaceService);
   private toastService = inject(ToastService);
   private dialogService = inject(DialogService);
   private confirmationDialogService = inject(ConfirmationDialogService);
 
-  stops: WritableSignal<Stop[]> = signal([]);
+  places: WritableSignal<Place[]> = signal([]);
   queriesUpdated$: BehaviorSubject<void> = new BehaviorSubject<void>(undefined);
   subs: Subscription = new Subscription();
   isLoading: WritableSignal<boolean> = signal(false);
@@ -43,17 +43,17 @@ export class StopsIndexComponent implements OnInit, OnDestroy {
   ref: DynamicDialogRef | undefined;
 
   ngOnInit(): void {
-    this.stopsListQueriesSubscription();
+    this.placesListQueriesSubscription();
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
-  stopsListQueriesSubscription() {
+  placesListQueriesSubscription() {
     this.subs.add (
       this.queriesUpdated$.asObservable()
-        .pipe(switchMap( () => this.loadStops$().pipe(
+        .pipe(switchMap( () => this.loadPlaces$().pipe(
           catchError((err) => {
             this.toastService.present({severity: 'error', detail: err.message, sticky: true})
             return EMPTY;
@@ -63,11 +63,11 @@ export class StopsIndexComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadStops$(): Observable<Stop[]> {
+  loadPlaces$(): Observable<Place[]> {
     this.isLoading.set(true);
-    return this.stopService.get()
-      .pipe(tap((data: Stop[]) => {
-          this.stops.set(data);
+    return this.placeService.get()
+      .pipe(tap((data: Place[]) => {
+          this.places.set(data);
         }),
         finalize(() => this.isLoading.set(false))
       );
@@ -77,10 +77,10 @@ export class StopsIndexComponent implements OnInit, OnDestroy {
     this.confirmationDialogService.confirm({
       message: `Are you sure you want to ${isDelete ? 'delete' : 'restore'}  this record?`,
       accept: () => {
-        this.stopService.delete(id).subscribe({
-          next: (stop: Stop) => {
+        this.placeService.delete(id).subscribe({
+          next: (place: Place) => {
             this.toastService.present({ severity: 'success', detail: `${isDelete ? 'Delete' : 'Restore'} successful!.` })
-            this.handleStopAction({ stop, action: Action.Update });
+            this.handlePlaceAction({ place, action: Action.Update });
           },
           error: err => this.toastService.present({ severity: 'error', detail: err.message })
         })
@@ -88,10 +88,10 @@ export class StopsIndexComponent implements OnInit, OnDestroy {
     });
   }
 
-  showFormDialog(action: Action = Action.Store, stop?: Stop) {
-    const payload = { action, stop };
-    this.ref = this.dialogService.open(StopsFormComponent, {
-      header: action === Action.Store ? 'Create Stop' : 'Edit Stop',
+  showFormDialog(action: Action = Action.Store, place?: Place) {
+    const payload = { action, place };
+    this.ref = this.dialogService.open(PlacesFormComponent, {
+      header: action === Action.Store ? 'Create Place' : 'Edit Plce',
       data: payload,
       styleClass: 'size-sm',
       dismissableMask: false,
@@ -101,8 +101,8 @@ export class StopsIndexComponent implements OnInit, OnDestroy {
 
   onCloseDialogSubscription() {
     const sub: Subscription = this.ref!.onClose.pipe(take(1)).subscribe({
-      next: (data: { stop: Stop, action: Action }) => {
-        this.handleStopAction(data);
+      next: (data: { place: Place, action: Action }) => {
+        this.handlePlaceAction(data);
       },
       complete: () => sub.unsubscribe()
     });
@@ -112,16 +112,16 @@ export class StopsIndexComponent implements OnInit, OnDestroy {
     this.showFormDialog(action);
   }
 
-  searchStop(){
-    return this.stops().filter(regulations => regulations.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
+  searchPlace(){
+    return this.places().filter(regulations => regulations.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
   }
 
-  handleStopAction(data: { stop: Stop, action: Action }) {
-    if (data?.stop) {
+  handlePlaceAction(data: { place: Place, action: Action }) {
+    if (data?.place) {
       data.action === Action.Store ?
-      this.stops.update(currentStops => [...currentStops, data.stop])
-      : this.stops.update(currentStops => currentStops.map(
-        currentUser => currentUser.id === data.stop.id ? data.stop : currentUser)
+      this.places.update(currentPlaces => [...currentPlaces, data.place])
+      : this.places.update(currentPlaces => currentPlaces.map(
+        currentPlace => currentPlace.id === data.place.id ? data.place : currentPlace)
       );
     }
   }

@@ -42,9 +42,9 @@ export class AppMenuComponent implements OnInit{
             routerLink: 'miniruta/users'
           }] : []),
           {
-            label: 'Stops',
+            label: 'Places',
             icon: 'pi pi-address-book',
-            routerLink: 'miniruta/stops'
+            routerLink: 'miniruta/places'
           },
         ]
       },

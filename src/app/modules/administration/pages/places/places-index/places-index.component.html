@@ -4,19 +4,19 @@
   }
   <div class="grid flex">
     <div class="col-6">
-      <h4>Stop List</h4>
+      <h4>Place List</h4>
     </div>
     <div class="col-6 text-right">
       <p-button label="Add New" icon="pi pi-plus" (click)="handleActionEmitter(action.Store)"/>
     </div>
   </div>
 
-  <p-table [value]="searchStop()" styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '50rem' }">
+  <p-table [value]="searchPlace()" styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="caption">
       <div class="flex">
         <span class="p-input-icon-left ml-auto">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" placeholder="Search keyword" [(ngModel)]="searchTerm" (keyup.enter)="this.searchStop()" />
+          <input pInputText type="text" placeholder="Search keyword" [(ngModel)]="searchTerm" (keyup.enter)="this.searchPlace()" />
         </span>
       </div>
     </ng-template>

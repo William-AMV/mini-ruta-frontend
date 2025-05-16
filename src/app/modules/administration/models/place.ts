@@ -1,6 +1,6 @@
 import {Model} from '../../../core/models/model';
 
-export class Stop extends Model {
+export class Place extends Model {
   id: string = '';
   name: string = '';
   linkPlace: string = '';
